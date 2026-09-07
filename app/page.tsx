@@ -853,7 +853,17 @@ export default function Home() {
 
           <AccordionItem value="addons" className="settings-card" id="additional-services-settings"><AccordionTrigger><span><strong>Servicios adicionales</strong><small>Nombre, precio y minutos que cada servicio suma al cálculo</small></span></AccordionTrigger><AccordionContent>
             <div className="settings-section-head"><p>Los cambios se reflejan inmediatamente en el cotizador y en el análisis operativo.</p><Button onClick={addAddon}><Plus /> Agregar servicio</Button></div>
-            <div className="addon-settings">{settings.addons.map((addon) => <article className="addon-config-card" key={addon.id}><label className="field"><span>Nombre</span><Input value={addon.name} onChange={(e) => updateSetting("addons", settings.addons.map((item) => item.id === addon.id ? { ...item, name: e.target.value } : item))} /></label><NumberField label="Valor" value={addon.price} onChange={(value) => updateSetting("addons", settings.addons.map((item) => item.id === addon.id ? { ...item, price: value } : item))} suffix="CLP" step={1000} /><NumberField label="Tiempo estimado" value={addon.minutes} onChange={(value) => updateSetting("addons", settings.addons.map((item) => item.id === addon.id ? { ...item, minutes: value } : item))} suffix="min" step={5} /><Button variant="outline" className="delete-addon" aria-label={`Eliminar ${addon.name}`} onClick={() => removeAddon(addon.id)}><Trash2 /> Eliminar</Button></article>)}</div>
+            <div className="addon-table-scroll" role="region" aria-label="Servicios adicionales editables" tabIndex={0}>
+              <table className="addon-table">
+                <thead><tr><th scope="col">Nombre</th><th scope="col">Valor <small>(CLP)</small></th><th scope="col">Tiempo estimado <small>(min)</small></th><th scope="col"><span className="sr-only">Acciones</span></th></tr></thead>
+                <tbody>{settings.addons.map((addon, index) => <tr key={addon.id}>
+                  <td><Input aria-label={`Nombre del servicio ${index + 1}`} title={addon.name} value={addon.name} onChange={(e) => updateSetting("addons", settings.addons.map((item) => item.id === addon.id ? { ...item, name: e.target.value } : item))} /></td>
+                  <td><Input type="number" aria-label={`Valor en CLP de ${addon.name || "servicio " + (index + 1)}`} min={0} max={100000000} step={1000} value={Number.isFinite(addon.price) ? addon.price : ""} aria-invalid={!Number.isFinite(addon.price) || addon.price < 0 || addon.price > 100000000} onChange={(e) => updateSetting("addons", settings.addons.map(item => item.id === addon.id ? { ...item, price: e.currentTarget.valueAsNumber } : item))} /></td>
+                  <td><Input type="number" aria-label={`Tiempo en minutos de ${addon.name || "servicio " + (index + 1)}`} min={0} max={10000} step={5} value={Number.isFinite(addon.minutes) ? addon.minutes : ""} aria-invalid={!Number.isFinite(addon.minutes) || addon.minutes < 0 || addon.minutes > 10000} onChange={(e) => updateSetting("addons", settings.addons.map(item => item.id === addon.id ? { ...item, minutes: e.currentTarget.valueAsNumber } : item))} /></td>
+                  <td><Button variant="ghost" size="icon-sm" className="addon-table-delete" title={`Eliminar ${addon.name}`} aria-label={`Eliminar ${addon.name}`} onClick={() => removeAddon(addon.id)}><Trash2 /></Button></td>
+                </tr>)}</tbody>
+              </table>
+            </div>
             {settings.addons.length === 0 ? <div className="empty-addons"><p>No hay servicios adicionales configurados.</p><Button variant="outline" onClick={addAddon}><Plus /> Crear el primero</Button></div> : null}
           </AccordionContent></AccordionItem>
 
