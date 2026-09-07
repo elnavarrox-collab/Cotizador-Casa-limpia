@@ -108,3 +108,22 @@ button:focus-visible,input:focus-visible,textarea:focus-visible,[data-slot="sele
 }
 @media(max-width:700px){.main-tabs button,.mode-switch button{font-size:12px}.topbar p{font-size:12px}}
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;transition-duration:.01ms!important;animation-duration:.01ms!important;animation-iteration-count:1!important}}
+
+/* One shared heading, compact editable rows; scroll only this table on phones. */
+.addon-table-scroll { overflow:auto; max-height:65vh; border:1px solid #dce7e4; border-radius:10px; }
+.addon-table { width:100%; min-width:560px; border-collapse:separate; border-spacing:0; table-layout:fixed; }
+.addon-table th { position:sticky; top:0; z-index:1; padding:8px; text-align:left; color:#325b53; background:#edf5f2; font-size:12px; border-bottom:1px solid #cbded7; }
+.addon-table th:first-child { width:auto; }
+.addon-table th:nth-child(2) { width:140px; }
+.addon-table th:nth-child(3) { width:160px; }
+.addon-table th:last-child { width:48px; }
+.addon-table th small { font-weight:normal; white-space:nowrap; }
+.addon-table td { padding:3px 6px; border-bottom:1px solid #e4ede9; background:#fff; }
+.addon-table tr:last-child td { border-bottom:0; }
+.addon-table tbody tr:hover td { background:#f3f9f6; }
+.addon-table input { height:34px; min-height:34px; padding:4px 8px; font-size:14px; border-color:transparent; box-shadow:none; background:transparent; }
+.addon-table input:hover { border-color:#b8d0ca; }
+.addon-table input[aria-invalid="true"] { border-color:#b14646; }
+.addon-table td:nth-child(2) input,.addon-table td:nth-child(3) input { text-align:right; font-variant-numeric:tabular-nums; }
+.addon-table .addon-table-delete { height:34px; min-height:34px; width:34px; color:#a43c3c; }
+@media(pointer:coarse),(max-width:700px) { .addon-table input { min-height:44px; font-size:16px; } .addon-table .addon-table-delete { width:44px; min-height:44px; } .addon-table th:last-child { width:56px; } .addon-table th:nth-child(2) { width:110px; } .addon-table th:nth-child(3) { width:130px; } }
