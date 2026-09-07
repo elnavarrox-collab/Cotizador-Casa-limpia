@@ -1,4 +1,5 @@
 import { MongoClient } from "mongodb";
+import { resetPromiseOnRejection } from "@/lib/recoverable-promise";
 
 const options = {
   maxPoolSize: 10,
@@ -20,11 +21,21 @@ function getClient() {
   }
 
   if (process.env.NODE_ENV !== "production") {
-    global.casaLimpiaMongoClient ??= new MongoClient(uri, options).connect();
+    if (!global.casaLimpiaMongoClient) {
+      const connection = new MongoClient(uri, options).connect();
+      global.casaLimpiaMongoClient = resetPromiseOnRejection(connection, (rejected) => {
+        if (global.casaLimpiaMongoClient === rejected) global.casaLimpiaMongoClient = undefined;
+      });
+    }
     return global.casaLimpiaMongoClient;
   }
 
-  productionClient ??= new MongoClient(uri, options).connect();
+  if (!productionClient) {
+    const connection = new MongoClient(uri, options).connect();
+    productionClient = resetPromiseOnRejection(connection, (rejected) => {
+      if (productionClient === rejected) productionClient = undefined;
+    });
+  }
   return productionClient;
 }
 
